@@ -11,6 +11,13 @@ let timer = 30;
 let timerInicial = 0;
 let tiempoRegresivo = null;
 
+// # Audio
+let clickAudio = new Audio("/Audio/click.wav");
+let winAudio = new Audio("/Audio/win.wav");
+let loseAudio = new Audio("/Audio/lose.wav");
+let rightAudio = new Audio("/Audio/right.wav");
+let wrongAudio = new Audio("/Audio/wrong.wav");
+
 // # HTML
 let mostrarMovimientos = document.getElementById("movimientos");
 let mostrarAciertos = document.getElementById("aciertos");
@@ -23,7 +30,7 @@ numeros = numeros.sort(() => {
   return Math.random() - 0.5;
 });
 
-console.log(numeros);
+// console.log(numeros);
 
 // # Funciones
 function contarTiempo() {
@@ -35,6 +42,10 @@ function contarTiempo() {
     if (timer == 0) {
       clearInterval(tiempoRegresivo);
       bloquearTarjetas();
+      loseAudio.play();
+      setTimeout(() => {
+        location.reload();
+      }, 5000);
     }
   }, 1000);
 }
@@ -42,12 +53,9 @@ function contarTiempo() {
 function bloquearTarjetas() {
   for (let i = 0; i <= 15; i++) {
     let tarjetaBloqueada = document.getElementById(i);
-    tarjetaBloqueada.innerHTML = numeros[i];
+    tarjetaBloqueada.innerHTML = `<img src="/Img/${numeros[i]}.png">`;
     tarjetaBloqueada.disabled = true;
   }
-  setTimeout(() => {
-    location.reload();
-  }, 4000);
 }
 
 //$ Funcion Principal
@@ -66,17 +74,18 @@ function destapar(id) {
     // $ Mostrar Numero
     tarjeta1 = document.getElementById(id);
     primerResultado = numeros[id];
-    tarjeta1.innerHTML = primerResultado;
+    tarjeta1.innerHTML = `<img src="/Img/${primerResultado}.png">`;
+    clickAudio.play();
 
-    // $ Dehabilitar Primer Boton
+    // $ Dehabilitar Primera Tarjeta
     tarjeta1.disabled = true;
   } else if (tarjetasDestapadas == 2) {
     //* Segunda Tarjeta
     tarjeta2 = document.getElementById(id);
     segundoResultado = numeros[id];
-    tarjeta2.innerHTML = segundoResultado;
+    tarjeta2.innerHTML = `<img src="/Img/${segundoResultado}.png">`;
 
-    // $ Dehabilitar Segundo Boton
+    // $ Dehabilitar Segunda Tarjeta
     tarjeta2.disabled = true;
 
     // * Incrementar Movimientos
@@ -86,6 +95,7 @@ function destapar(id) {
     if (primerResultado == segundoResultado) {
       //* Encerrar contador tarjetas destapadas
       tarjetasDestapadas = 0;
+      rightAudio.play();
 
       //* Aciertos
       aciertos++;
@@ -96,9 +106,10 @@ function destapar(id) {
         mostrarAciertos.innerHTML = `Aciertos: ${aciertos} 😱`;
         mostrarTiempo.innerHTML = `Fantatico 🎉 solo demoraste ${timerInicial} `;
         mostrarAciertos.innerHTML = `Movimiento: ${movimientos} 👌😎 `;
+        winAudio.play();
         setTimeout(() => {
           location.reload();
-        }, 4000);
+        }, 5000);
       }
     } else {
       //* Volver a Tapar
@@ -109,6 +120,7 @@ function destapar(id) {
         tarjeta2.disabled = false;
         tarjetasDestapadas = 0;
       }, 800);
+      wrongAudio.play();
     }
   }
 }

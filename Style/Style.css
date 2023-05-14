@@ -41,10 +41,17 @@ button {
   font-weight: bold;
   border-radius: 10px;
   border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 button:hover {
   cursor: pointer;
+}
+
+button img {
+  width: 100%;
 }
 
 /*# Section 2 */
